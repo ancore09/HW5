@@ -16,6 +16,18 @@ extension CALayer {
     }
 }
 
+extension UIColor {
+    var rgba: (red: CGFloat, green: CGFloat, blue: CGFloat, alpha: CGFloat) {
+        var red: CGFloat = 0
+        var green: CGFloat = 0
+        var blue: CGFloat = 0
+        var alpha: CGFloat = 0
+        getRed(&red, green: &green, blue: &blue, alpha: &alpha)
+
+        return (red, green, blue, alpha)
+    }
+}
+
 class ViewController: UIViewController {
     
     // MARK: Variables
@@ -26,6 +38,8 @@ class ViewController: UIViewController {
     private let incBtn = UIButton()
     let commentView = UIView()
     let generator = UIImpactFeedbackGenerator(style: .light)
+    let colorPaletteView = ColorPaletteView()
+    var buttonsSV = UIStackView()
     
     // MARK: Lifecycle
 
@@ -38,10 +52,23 @@ class ViewController: UIViewController {
     
     private func setupView() {
         view.backgroundColor = .systemGray6
+        colorPaletteView.isHidden = true
+        
         setupIncButton()
         setupValueLabel()
         setupMenuButtons()
         setupCommentView()
+        setupColorControlSV()
+    }
+    
+    private func setupColorControlSV() {
+        view.addSubview(colorPaletteView)
+        colorPaletteView.translatesAutoresizingMaskIntoConstraints = false
+        colorPaletteView.pinTop(to: incBtn.bottomAnchor, 8)
+        colorPaletteView.pinLeft(to: view.safeAreaLayoutGuide.leadingAnchor, 12)
+        colorPaletteView.pinRight(to: view.safeAreaLayoutGuide.trailingAnchor, 12)
+        colorPaletteView.pinBottom(to: buttonsSV.topAnchor, 8)
+        colorPaletteView.addTarget(self, action: #selector(changeColor), for: .touchDragInside)
     }
     
     private func setupValueLabel() {
@@ -78,16 +105,20 @@ class ViewController: UIViewController {
         
         self.view.addSubview(incBtn)
         incBtn.setHeight(48)
-        incBtn.pinTop(to: self.view.centerYAnchor)
+        incBtn.pinBottom(to: self.view.centerYAnchor)
         incBtn.pin(to: self.view, [.left: 24, .right: 24])
         incBtn.addTarget(self, action: #selector(incrementButtonPressed), for: .touchUpInside)
     }
     
     private func setupMenuButtons() {
         let colorsButton = makeMenuButton(title: "🎨")
+        colorsButton.addTarget(self, action: #selector(paletteBtnWasPressed), for: .touchUpInside)
         let notesButton = makeMenuButton(title: "📝")
         let newsButton = makeMenuButton(title: "📰")
-        let buttonsSV = UIStackView(arrangedSubviews: [colorsButton, notesButton, newsButton])
+        buttonsSV.addArrangedSubview(colorsButton)
+        buttonsSV.addArrangedSubview(notesButton)
+        buttonsSV.addArrangedSubview(newsButton)
+        // buttonsSV = UIStackView(arrangedSubviews: [colorsButton, notesButton, newsButton])
         buttonsSV.spacing = 12
         buttonsSV.axis = .horizontal
         buttonsSV.distribution = .fillEqually
@@ -126,6 +157,20 @@ class ViewController: UIViewController {
         }
         generator.prepare()
         generator.impactOccurred()
+    }
+    
+    @objc
+    private func paletteBtnWasPressed() {
+        colorPaletteView.isHidden.toggle()
+        generator.prepare()
+        generator.impactOccurred()
+    }
+    
+    @objc
+    private func changeColor() {
+        UIView.animate(withDuration: 0.5) {
+            self.view.backgroundColor = self.colorPaletteView.chosenColor
+        }
     }
     
     func updateUI() {

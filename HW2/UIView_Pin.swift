@@ -109,7 +109,7 @@ extension UIView {
     }
 
     @discardableResult
-    func pinButton(to side: NSLayoutYAxisAnchor, _ const: Int = 0) -> NSLayoutConstraint {
+    func pinBottom(to side: NSLayoutYAxisAnchor, _ const: Int = 0) -> NSLayoutConstraint {
         translatesAutoresizingMaskIntoConstraints = false
         let constraint = bottomAnchor.constraint(
             equalTo: side,
