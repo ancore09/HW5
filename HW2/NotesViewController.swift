@@ -10,11 +10,7 @@ import UIKit
 
 final class NotesViewController: UIViewController {
     let tableView = UITableView(frame: .zero, style: .insetGrouped)
-    var dataSource = [
-        ShortNote(text: "1"),
-        ShortNote(text: "2"),
-        ShortNote(text: "3")
-    ]
+    var dataSource = [ShortNote]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -24,6 +20,11 @@ final class NotesViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        
+        let defaults = UserDefaults.standard
+        if let data = defaults.object(forKey: "notes") as? Data {
+            dataSource = try! JSONDecoder().decode([ShortNote].self, from: data)
+        }
         
         setupView()
     }
@@ -105,7 +106,14 @@ extension NotesViewController: UITableViewDelegate {
 
 extension NotesViewController: AddNoteDelegate {
     func newNoteAdded(note: ShortNote) {
+        
         dataSource.insert(note, at: 0)
+        
+        let defaults = UserDefaults.standard
+        if let encoded = try? JSONEncoder().encode(dataSource) {
+            defaults.set(encoded, forKey: "notes")
+        }
+        
         tableView.reloadData()
     }
 }
