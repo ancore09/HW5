@@ -114,6 +114,7 @@ class ViewController: UIViewController {
         let colorsButton = makeMenuButton(title: "🎨")
         colorsButton.addTarget(self, action: #selector(paletteBtnWasPressed), for: .touchUpInside)
         let notesButton = makeMenuButton(title: "📝")
+        notesButton.addTarget(self, action: #selector(showNotesController), for: .touchUpInside)
         let newsButton = makeMenuButton(title: "📰")
         buttonsSV.addArrangedSubview(colorsButton)
         buttonsSV.addArrangedSubview(notesButton)
@@ -141,6 +142,12 @@ class ViewController: UIViewController {
     }
     
     // MARK: Update functions
+    
+    @objc
+    func showNotesController() {
+        let notesViewController = NotesViewController()
+        self.navigationController?.pushViewController(notesViewController, animated: true)
+    }
     
     @objc
     func incrementButtonPressed() {
