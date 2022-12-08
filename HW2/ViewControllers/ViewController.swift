@@ -116,6 +116,7 @@ class ViewController: UIViewController {
         let notesButton = makeMenuButton(title: "📝")
         notesButton.addTarget(self, action: #selector(showNotesController), for: .touchUpInside)
         let newsButton = makeMenuButton(title: "📰")
+        newsButton.addTarget(self, action: #selector(showNewsListController), for: .touchUpInside)
         buttonsSV.addArrangedSubview(colorsButton)
         buttonsSV.addArrangedSubview(notesButton)
         buttonsSV.addArrangedSubview(newsButton)
@@ -147,6 +148,12 @@ class ViewController: UIViewController {
     func showNotesController() {
         let notesViewController = NotesViewController()
         self.navigationController?.pushViewController(notesViewController, animated: true)
+    }
+    
+    @objc
+    private func showNewsListController() {
+        let newsListController = NewsListViewController()
+        navigationController?.pushViewController(newsListController, animated: true)
     }
     
     @objc
